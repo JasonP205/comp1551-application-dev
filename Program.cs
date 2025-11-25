@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+// Abstract base class representing a person in the system
+// Serves as the parent class for Admin, Teacher, and Student
 public abstract class Person
 {
+    // Enumeration defining the types of roles in the system
     public enum RoleType
     {
         Admin,
@@ -12,13 +15,25 @@ public abstract class Person
         Student,
     }
 
+    // Unique identifier for each person (auto-incremented)
     public int ID { get; set; }
+
+    // Person's full name
     public string Name { get; set; }
+
+    // Phone number (10 digits)
     public string Telephone { get; set; }
+
+    // Email address
     public string Email { get; set; }
+
+    // Role type (Admin, Teacher, or Student)
     public RoleType Role { get; protected set; }
+
+    // Static counter for auto-generating unique IDs
     private static int idCounter = 1;
 
+    // Constructor: Automatically assigns unique ID and initializes basic information
     public Person(string name, string telephone, string email)
     {
         ID = idCounter++;
@@ -27,6 +42,7 @@ public abstract class Person
         Email = email;
     }
 
+    // Displays basic information of the person (can be overridden by child classes)
     public virtual void DisplayInfor()
     {
         Console.WriteLine($"||ID: {ID}");
@@ -36,6 +52,8 @@ public abstract class Person
         Console.WriteLine($"||Role: {Role}");
     }
 
+    // Updates basic information (Name, Telephone, Email)
+    // User can skip fields by leaving them blank
     public virtual void UpdateInfor()
     {
         Console.WriteLine($"Current Name: {Name} ");
@@ -60,21 +78,30 @@ public abstract class Person
         }
     }
 
+    // Abstract method to update advanced/role-specific information (must be implemented by child classes)
     public abstract void UpdateAdvanceInfor();
 }
 
+// Admin class: represents an administrator with salary, working type, and working hours
 public class Admin : Person
 {
+    // Enumeration for employment types
     public enum workingType
     {
         FullTime,
         PartTime,
     }
 
+    // Admin's salary
     public decimal Salary { get; set; }
+
+    // Number of working hours
     public decimal WorkingHours { get; set; }
+
+    // Type of employment (FullTime or PartTime)
     public workingType WType { get; set; }
 
+    // Constructor: Initializes admin with basic info plus salary, working type, and hours
     public Admin(
         string name,
         string telephone,
@@ -91,6 +118,7 @@ public class Admin : Person
         this.WType = WType;
     }
 
+    // Displays admin information including salary, working type, and hours
     public override void DisplayInfor()
     {
         base.DisplayInfor();
@@ -99,6 +127,7 @@ public class Admin : Person
         Console.WriteLine($"||Working Hours: {WorkingHours.ToString("F2")}");
     }
 
+    // Updates admin-specific information (salary, working type, hours)
     public override void UpdateAdvanceInfor()
     {
         Console.WriteLine($"Current salary: {Salary.ToString("C0")} ");
@@ -125,12 +154,19 @@ public class Admin : Person
     }
 }
 
+// Teacher class: represents a teacher with salary and two subjects
 public class Teacher : Person
 {
+    // Teacher's salary
     public decimal Salary { get; set; }
+
+    // First subject taught by the teacher
     public string SubjectOne { get; set; }
+
+    // Second subject taught by the teacher
     public string SubjectTwo { get; set; }
 
+    // Constructor: Initializes teacher with basic info plus salary and two subjects
     public Teacher(
         string name,
         string telephone,
@@ -147,6 +183,7 @@ public class Teacher : Person
         this.SubjectTwo = SubjectTwo;
     }
 
+    // Displays teacher information including salary and subjects
     public override void DisplayInfor()
     {
         base.DisplayInfor();
@@ -155,6 +192,7 @@ public class Teacher : Person
         Console.WriteLine($"||Subject Two: {SubjectTwo}");
     }
 
+    // Updates teacher-specific information (salary and subjects)
     public override void UpdateAdvanceInfor()
     {
         Console.WriteLine($"Current salary: {Salary.ToString("C0")} ");
@@ -182,12 +220,19 @@ public class Teacher : Person
     }
 }
 
+// Student class: represents a student with three subjects
 public class Student : Person
 {
+    // First subject taken by the student
     public string SubjectOne { get; set; }
+
+    // Second subject taken by the student
     public string SubjectTwo { get; set; }
+
+    // Third subject taken by the student
     public string SubjectThree { get; set; }
 
+    // Constructor: Initializes student with basic info plus three subjects
     public Student(
         string name,
         string telephone,
@@ -204,6 +249,7 @@ public class Student : Person
         this.SubjectThree = SubjectThree;
     }
 
+    // Displays student information including all three subjects
     public override void DisplayInfor()
     {
         base.DisplayInfor();
@@ -212,6 +258,7 @@ public class Student : Person
         Console.WriteLine($"||Subject Three: {SubjectThree}");
     }
 
+    // Updates student-specific information (three subjects)
     public override void UpdateAdvanceInfor()
     {
         Console.WriteLine($"Current subject one: {SubjectOne} ");
@@ -239,12 +286,19 @@ public class Student : Person
     }
 }
 
+// Main Program class: controls the application, menu system, and person management
 public class Program
 {
+    // List storing all persons in the system
     private static List<Person> persons = new List<Person>();
+
+    // Regex pattern for validating 10-digit phone numbers
     private static readonly Regex PhoneNumberRegex = new Regex(@"^\d{10}$");
+
+    // Regex pattern for validating email format
     private static readonly Regex EmailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
 
+    // Main entry point: runs the main menu loop until user exits
     public static void Main(string[] args)
     {
         bool isRunning = true;
@@ -254,6 +308,8 @@ public class Program
         }
     }
 
+    // Displays the main menu and processes user selection
+    // Returns false if user chooses to exit, true otherwise
     private static bool startMainMenu()
     {
         Console.Clear();
@@ -269,6 +325,7 @@ public class Program
         Console.WriteLine("======================================");
         Console.WriteLine("Please select an option (1-6): ");
         string choice = Console.ReadLine();
+        // Valid menu options
         List<string> validChoices = new List<string> { "1", "2", "3", "4", "5", "6" };
 
         if (!validChoices.Contains(choice))
@@ -301,6 +358,7 @@ public class Program
         return true;
     }
 
+    // Adds a new person (Admin, Teacher, or Student) to the system
     private static void AddPerson()
     {
         Console.Clear();
@@ -316,13 +374,15 @@ public class Program
             Pause();
             return;
         }
+        // Collect basic information common to all person types
         string name = validStringInput("Enter Name: ");
         string telephone = validPhoneNumberInput();
         string email = validEmailInput();
         Person newPerson = null;
+        // Create appropriate person type based on role selection
         switch (roleChoice)
         {
-            case "1":
+            case "1": // Admin
                 decimal? adminSalary = validDecimalInput("Enter Salary: ");
                 Admin.workingType? wType = ValidWorkingType();
                 decimal? workingHours = validDecimalInput("Enter Working Hours: ");
@@ -335,7 +395,7 @@ public class Program
                     workingHours.Value
                 );
                 break;
-            case "2":
+            case "2": // Teacher
                 decimal? teacherSalary = validDecimalInput("Enter Salary: ");
                 string subjectOne = validStringInput("Enter name of Subject One: ");
                 string subjectTwo = validStringInput("Enter name of Subject Two: ");
@@ -348,7 +408,7 @@ public class Program
                     subjectTwo
                 );
                 break;
-            case "3":
+            case "3": // Student
                 string stuSubjectOne = validStringInput("Enter name of Subject One: ");
                 string stuSubjectTwo = validStringInput("Enter name of Subject Two: ");
                 string stuSubjectThree = validStringInput("Enter name of Subject Three: ");
@@ -371,6 +431,7 @@ public class Program
         Pause();
     }
 
+    // Displays information for all persons in the system
     private static void ViewAllPersons()
     {
         Console.Clear();
@@ -391,6 +452,7 @@ public class Program
         Pause();
     }
 
+    // Displays persons filtered by their role (Admin, Teacher, or Student)
     private static void ViewPersonsByGroup()
     {
         Console.Clear();
@@ -400,6 +462,7 @@ public class Program
         Console.WriteLine("3. Students");
         string groupChoice = Console.ReadLine();
         Person.RoleType selectedRole;
+        // Determine which role to filter by
         switch (groupChoice)
         {
             case "1":
@@ -416,6 +479,7 @@ public class Program
                 Pause();
                 return;
         }
+        // Filter persons list by selected role
         var filteredPersons = persons.Where(p => p.Role == selectedRole).ToList();
         if (filteredPersons.Count == 0)
         {
@@ -433,6 +497,7 @@ public class Program
         Pause();
     }
 
+    // Edits an existing person's information by ID
     private static void EditPersonInformation()
     {
         Console.Clear();
@@ -457,6 +522,7 @@ public class Program
         Pause();
     }
 
+    // Deletes a person from the system by ID
     private static void DeletePerson()
     {
         Console.Clear();
@@ -479,6 +545,7 @@ public class Program
         Pause();
     }
 
+    // Pauses the program and waits for user to press any key
     public static void Pause()
     {
         Console.WriteLine("\n");
@@ -486,6 +553,7 @@ public class Program
         Console.ReadKey();
     }
 
+    // Validates and prompts user to select working type (FullTime or PartTime)
     public static Admin.workingType? ValidWorkingType(bool allowEmpty = false)
     {
         string workingTypeInput = "";
@@ -536,6 +604,7 @@ public class Program
         return (Admin.workingType)Enum.Parse(typeof(Admin.workingType), workingTypeInput);
     }
 
+    // Validates string input - ensures it's not empty (used for names, subjects, etc.)
     public static string validStringInput(string prompt, bool allowEmpty = false)
     {
         string nameInput = "";
@@ -573,6 +642,7 @@ public class Program
         return nameInput;
     }
 
+    // Validates phone number input - must be exactly 10 digits
     public static string validPhoneNumberInput(bool allowEmpty = false)
     {
         string phoneInput = "";
@@ -604,6 +674,7 @@ public class Program
         return phoneInput;
     }
 
+    // Validates email input - must match standard email format
     public static string validEmailInput(bool allowEmpty = false)
     {
         string emailInput = "";
@@ -635,6 +706,7 @@ public class Program
         return emailInput;
     }
 
+    // Validates decimal number input - must be non-negative (for salary and working hours)
     public static decimal? validDecimalInput(string prompt, bool allowEmpty = false)
     {
         decimal decimalInput = 0;
@@ -666,6 +738,7 @@ public class Program
         return decimalInput;
     }
 
+    // Outputs colored text to the console (supports any valid ConsoleColor name)
     public static void Console_Output(string message, string color)
     {
         ConsoleColor targetColor;
