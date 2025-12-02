@@ -1,7 +1,12 @@
-﻿using System;
+// Basic .NET library: Console, String, Math, etc.
+using System;
+// Provides generic data structures: List<T>, Dictionary<TKey, TValue>, etc.
 using System.Collections.Generic;
+// Enables LINQ methods: Where(), Select(), OrderBy(), etc.
 using System.Linq;
+// Supports Regular Expressions: Regex.Match(), Regex.IsMatch(), etc.
 using System.Text.RegularExpressions;
+
 
 // Abstract base class representing a person in the system
 // Serves as the parent class for Admin, Teacher, and Student
